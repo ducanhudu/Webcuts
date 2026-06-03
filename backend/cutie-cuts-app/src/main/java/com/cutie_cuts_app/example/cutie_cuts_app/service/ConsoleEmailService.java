@@ -2,11 +2,13 @@ package com.cutie_cuts_app.example.cutie_cuts_app.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
 
 @Service
-@ConditionalOnProperty(name = "app.mail.provider", havingValue = "console", matchIfMissing = true)
+@ConditionalOnExpression(
+        "'${app.mail.provider:console}'.trim().isEmpty() || "
+                + "'${app.mail.provider:console}'.equalsIgnoreCase('console')")
 public class ConsoleEmailService implements EmailService {
 
     private static final Logger log = LoggerFactory.getLogger(ConsoleEmailService.class);
