@@ -202,19 +202,9 @@ public class PresignService {
     }
 
     private String buildBrowserUploadUrl(String directUploadUrl) {
-        if (browserProxyPath == null || browserProxyPath.isBlank()) {
-            return directUploadUrl;
-        }
-
-        URI uri = URI.create(directUploadUrl);
-        StringBuilder browserUrl = new StringBuilder(normalizeProxyPath(browserProxyPath));
-        appendPath(browserUrl, uri.getRawPath());
-
-        if (uri.getRawQuery() != null && !uri.getRawQuery().isBlank()) {
-            browserUrl.append('?').append(uri.getRawQuery());
-        }
-
-        return browserUrl.toString();
+        // Presigned S3/MinIO URLs must be used with the exact host/path they were signed for.
+        // Rewriting them through /minio breaks signature validation behind reverse proxies.
+        return directUploadUrl;
     }
 
     private String buildBrowserObjectUrl(String bucket, String objectKey) {
